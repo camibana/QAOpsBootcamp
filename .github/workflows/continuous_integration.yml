@@ -1,0 +1,42 @@
+name: CI/CD BOOTCAMP
+
+on:
+  schedule:
+    - cron: '1 * * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: gradle:7.6.4-jdk17
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew assemble -x test
+
+      - name: Archive JAR files
+        uses: actions/upload-artifact@v3
+        with:
+          name: jar-files
+          path: build/libs/*.jar
+
+  test:
+    runs-on: ubuntu-latest
+    container: gradle:7.6.4-jdk17
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run tests
+        run: ./gradlew test
+
