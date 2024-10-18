@@ -1,8 +1,7 @@
 name: CI/CD BOOTCAMP
 
 on:
-  schedule:
-    - cron: '1 * * * *'
+  push:
   workflow_dispatch:
 
 jobs:
